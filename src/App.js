@@ -109,7 +109,6 @@ class Table extends Component {
   } else if(this.state.sort_params.includes('-'+key)){
     var index = this.state.sort_params.indexOf('-'+key);
     this.state.sort_params.splice(index, 1);
-    this.state.sort_params.push(key);
   } else {
     this.state.sort_params.push(key);
   }
