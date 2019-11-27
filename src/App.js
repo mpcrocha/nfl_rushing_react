@@ -22,8 +22,6 @@ class Table extends Component {
       .then(res => res.json())
       .then(
         (result) => {
-          console.log(result.data);
-          console.log(result);
           this.setState({
             isLoaded: true,
             rushings: result.data,
@@ -100,9 +98,9 @@ class Table extends Component {
  sortData(key,e) {
   e.preventDefault();
   var old_sort_params = this.state.sort_params.slice(0);
-  console.log("sort_params:" + old_sort_params);
+  var current_page_url = this.state.current_page_url;
+  
   if(this.state.sort_params.includes(key)) {
-    console.log("removing key: " + key);
     var index = this.state.sort_params.indexOf(key);
     this.state.sort_params.splice(index, 1);
     this.state.sort_params.push('-'+key);
@@ -113,18 +111,15 @@ class Table extends Component {
     this.state.sort_params.push(key);
   }
 
-  console.log("old_sort_params: " + old_sort_params);
-  console.log("sort_params:" + this.state.sort_params);
-  console.log(this.state.current_page_url);
   var url = ''
   if(old_sort_params.length == 0){
     url = this.state.current_page_url + '&sort=' + this.state.sort_params;
+  } else if(this.state.sort_params.length == 0) {
+    url = "http://localhost:3001/api/v1/rushing_statistics";
   } else {
-    console.log(old_sort_params.join(','))
-    url = this.state.current_page_url.replace('sort='+old_sort_params.join(','), 'sort='+ this.state.sort_params.join(','));
+    const new_sort_query = 'sort='+ this.state.sort_params.join('%2C');
+    url = current_page_url.replace('sort='+old_sort_params.join('%2C'), new_sort_query);
   }
-  
-  console.log("url:" + url);
   this.apiCall(url);
  }
 
@@ -174,7 +169,6 @@ class Table extends Component {
  
  filterPlayer() {
   const player = document.getElementById("search").value
-  console.log(player)
   this.apiCall("http://localhost:3001/api/v1/rushing_statistics?player=" + player )
  }
 } 
